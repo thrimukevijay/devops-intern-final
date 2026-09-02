@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/devops-intern-final
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: scripts
+      - name: Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: app/Dockerfile
+
+  build:
+    runs-on: ubuntu-24.04
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: app
+          push: false
+          load: true
+          tags: local/devops-intern-final:${{ github.sha }}
+          build-args: BUILD_SHA=${{ github.sha }}
+
+  test:
+    runs-on: ubuntu-24.04
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build test image
+        uses: docker/build-push-action@v6
+        with:
+          context: app
+          load: true
+          tags: local/devops-intern-final:${{ github.sha }}
+          build-args: BUILD_SHA=${{ github.sha }}
+      - name: Start and verify container
+        run: |
+          docker run --detach --rm --name nginx-app -p 8080:8080 local/devops-intern-final:${{ github.sha }}
+          for attempt in {1..15}; do ./scripts/healthcheck.sh http://localhost:8080 && exit 0; sleep 2; done
+          docker logs nginx-app
+          exit 1
+
+  publish:
+    runs-on: ubuntu-24.04
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: app
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+          build-args: BUILD_SHA=${{ github.sha }}
