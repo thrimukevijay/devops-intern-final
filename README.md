@@ -4,6 +4,7 @@
 
 **Author:**  thrimukevijay
 **Submission date:** 2026-09-02
+**Repository:** https://github.com/thrimukevijay/devops-intern-final
 
 This repository builds a non-root NGINX static site, tests it in GitHub Actions, publishes it to GHCR, deploys it through Nomad, and ships its Docker logs to Grafana Loki.
 
