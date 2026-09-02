@@ -34,6 +34,7 @@ job "nginx-app" {
       delay = "30s"
       delay_function = "exponential"
       max_delay = "5m"
+      unlimited = false
     }
 
     service {
@@ -53,7 +54,10 @@ job "nginx-app" {
         image = "ghcr.io/thrimukevijay/devops-intern-final:${var.image_tag}"
         ports = ["http"]
       }
-      resources { cpu = 100; memory = 64 }
+      resources {
+        cpu    = 100
+        memory = 64
+      }
     }
   }
 }
