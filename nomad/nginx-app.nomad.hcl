@@ -21,8 +21,20 @@ job "nginx-app" {
       auto_revert = true
     }
 
-    restart { attempts = 3; interval = "5m"; delay = "15s"; mode = "fail" }
-    reschedule { attempts = 3; interval = "30m"; delay = "30s"; delay_function = "exponential"; max_delay = "5m" }
+    restart {
+      attempts = 3
+      interval = "5m"
+      delay = "15s"
+      mode = "fail"
+    }
+
+    reschedule {
+      attempts = 3
+      interval = "30m"
+      delay = "30s"
+      delay_function = "exponential"
+      max_delay = "5m"
+    }
 
     service {
       name = "nginx-app"

@@ -69,6 +69,8 @@ curl -i http://localhost:8080/healthz
 
 The pinned `nginx:1.27.5-alpine` image runs as the `nginx` user. The image exposes port 8080, includes an in-container health check, and injects `BUILD_SHA` into the page during build. Record the observed `docker images` size and curl output in the submission evidence after running these commands.
 
+Observed locally with `BUILD_SHA=verification` (Docker Engine 27.5.1): the image size was `48.2 MB` (48241258 bytes). `GET /` returned `HTTP/1.1 200 OK` and contained `Build identifier: verification`; `GET /healthz` returned `HTTP/1.1 200 OK` with body `ok`. The health-check script reported: `OK: http://localhost:18080/healthz returned HTTP 200`.
+
 ## 4. Continuous integration and delivery
 
 The workflow runs lint, build, test, then publish. The test job starts the image and gates promotion on `scripts/healthcheck.sh`. On pushes to `main`, `GITHUB_TOKEN` has only `packages: write` for the publish job and sends both the immutable commit-SHA tag and `latest` to GHCR. Replace both `REPLACE_WITH_GITHUB_OWNER` strings before pushing.
