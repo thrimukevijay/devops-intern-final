@@ -1,8 +1,8 @@
 # DevOps Intern Final Assessment
 
-[![CI](https://github.com/REPLACE_WITH_GITHUB_OWNER/devops-intern-final/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/REPLACE_WITH_GITHUB_OWNER/devops-intern-final/actions/workflows/ci.yml)
+[![CI](https://github.com/thrimukevijay/devops-intern-final/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/thrimukevijay/devops-intern-final/actions/workflows/ci.yml)
 
-**Author:** Prem K  
+**Author:**   
 **Submission date:** 2026-09-02
 
 This repository builds a non-root NGINX static site, tests it in GitHub Actions, publishes it to GHCR, deploys it through Nomad, and ships its Docker logs to Grafana Loki.
@@ -24,7 +24,7 @@ Use Docker Engine 27.5.1, Nomad 1.9.6, Consul 1.20.2, and ShellCheck 0.10.0 (or 
 ## Quick Start
 
 ```sh
-git clone https://github.com/REPLACE_WITH_GITHUB_OWNER/devops-intern-final.git
+git clone https://github.com/thrimukevijay/devops-intern-final.git
 cd devops-intern-final
 docker build --build-arg BUILD_SHA="$(git rev-parse --short HEAD)" -t devops-intern-final:local app
 docker run -d --rm --name nginx-app -p 8080:8080 devops-intern-final:local
@@ -73,11 +73,11 @@ Observed locally with `BUILD_SHA=verification` (Docker Engine 27.5.1): the image
 
 ## 4. Continuous integration and delivery
 
-The workflow runs lint, build, test, then publish. The test job starts the image and gates promotion on `scripts/healthcheck.sh`. On pushes to `main`, `GITHUB_TOKEN` has only `packages: write` for the publish job and sends both the immutable commit-SHA tag and `latest` to GHCR. Replace both `REPLACE_WITH_GITHUB_OWNER` strings before pushing.
+The workflow runs lint, build, test, then publish. The test job starts the image and gates promotion on `scripts/healthcheck.sh`. On pushes to `main`, `GITHUB_TOKEN` has only `packages: write` for the publish job and sends both the immutable commit-SHA tag and `latest` to GHCR. Replace both `thrimukevijay` strings before pushing.
 
 ## 5. Nomad
 
-Replace `REPLACE_WITH_GITHUB_OWNER` in `nomad/nginx-app.nomad.hcl`, then run:
+Replace `thrimukevijay` in `nomad/nginx-app.nomad.hcl`, then run:
 
 ```sh
 nomad job validate -var='image_tag=REPLACE_WITH_SHA' nomad/nginx-app.nomad.hcl
