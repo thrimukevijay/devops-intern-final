@@ -51,7 +51,7 @@ job "nginx-app" {
     task "nginx" {
       driver = "docker"
       config {
-        image = "ghcr.io/thrimukevijay/devops-intern-final:${var.image_tag}"
+        image = "ghcr.io/thrimukevijay/nginx-nomad-cicd-pipeline:${var.image_tag}"
         ports = ["http"]
       }
       resources {

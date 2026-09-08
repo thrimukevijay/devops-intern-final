@@ -1,10 +1,10 @@
 # DevOps Intern Final Assessment
 
-[![CI](https://github.com/thrimukevijay/devops-intern-final/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/thrimukevijay/devops-intern-final/actions/workflows/ci.yml)
+[![CI](https://github.com/thrimukevijay/nginx-nomad-cicd-pipeline/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/thrimukevijay/nginx-nomad-cicd-pipeline/actions/workflows/ci.yml)
 
 **Author:**  thrimukevijay
 **Submission date:** 2026-09-02
-**Repository:** https://github.com/thrimukevijay/devops-intern-final
+**Repository:** https://github.com/thrimukevijay/nginx-nomad-cicd-pipeline
 
 This repository builds a non-root NGINX static site, tests it in GitHub Actions, publishes it to GHCR, deploys it through Nomad, and ships its Docker logs to Grafana Loki.
 
@@ -20,15 +20,15 @@ source ──> GitHub Actions (lint/build/test) ──> GHCR
 
 ## Prerequisites
 
-Use Docker Engine 27.5.1, Nomad 1.9.6, Consul 1.20.2, and ShellCheck 0.10.0 (or the pinned GitHub Actions runners). A GitHub repository named `devops-intern-final`, GitHub Container Registry permission, and a Nomad cluster with Consul integration are required for the deployment stages.
+Use Docker Engine 27.5.1, Nomad 1.9.6, Consul 1.20.2, and ShellCheck 0.10.0 (or the pinned GitHub Actions runners). A GitHub repository named `nginx-nomad-cicd-pipeline`, GitHub Container Registry permission, and a Nomad cluster with Consul integration are required for the deployment stages.
 
 ## Quick Start
 
 ```sh
-git clone https://github.com/thrimukevijay/devops-intern-final.git
-cd devops-intern-final
-docker build --build-arg BUILD_SHA="$(git rev-parse --short HEAD)" -t devops-intern-final:local app
-docker run -d --rm --name nginx-app -p 8080:8080 devops-intern-final:local
+git clone https://github.com/thrimukevijay/nginx-nomad-cicd-pipeline.git
+cd nginx-nomad-cicd-pipeline
+docker build --build-arg BUILD_SHA="$(git rev-parse --short HEAD)" -t nginx-nomad-cicd-pipeline:local app
+docker run -d --rm --name nginx-app -p 8080:8080 nginx-nomad-cicd-pipeline:local
 ./scripts/healthcheck.sh http://localhost:8080
 curl -i http://localhost:8080/
 curl -i http://localhost:8080/healthz
@@ -61,9 +61,9 @@ Example health-check output: `OK: http://localhost:8080/healthz returned HTTP 20
 ## 3. Container image
 
 ```sh
-docker build --build-arg BUILD_SHA=local-test -t devops-intern-final:local app
-docker run -d --rm --name nginx-app -p 8080:8080 devops-intern-final:local
-docker images devops-intern-final:local
+docker build --build-arg BUILD_SHA=local-test -t nginx-nomad-cicd-pipeline:local app
+docker run -d --rm --name nginx-app -p 8080:8080 nginx-nomad-cicd-pipeline:local
+docker images nginx-nomad-cicd-pipeline:local
 curl -i http://localhost:8080/
 curl -i http://localhost:8080/healthz
 ```
@@ -78,7 +78,7 @@ The workflow runs lint, build, test, then publish. The test job starts the image
 
 ## 5. Nomad
 
-The Nomad job is already configured to pull from `ghcr.io/thrimukevijay/devops-intern-final`; then run:
+The Nomad job is already configured to pull from `ghcr.io/thrimukevijay/nginx-nomad-cicd-pipeline`; then run:
 
 ```sh
 nomad job validate -var='image_tag=REPLACE_WITH_SHA' nomad/nginx-app.nomad.hcl

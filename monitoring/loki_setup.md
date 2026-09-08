@@ -4,7 +4,7 @@ Start the stack from the repository root:
 
 ```sh
 docker compose -f monitoring/docker-compose.yaml up -d
-docker run -d --name nginx-app -p 8080:8080 devops-intern-final:local
+docker run -d --name nginx-app -p 8080:8080 nginx-nomad-cicd-pipeline:local
 curl -i http://localhost:8080/missing
 ```
 

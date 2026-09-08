@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/devops-intern-final
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/nginx-nomad-cicd-pipeline
 
 jobs:
   lint:
@@ -38,7 +38,7 @@ jobs:
           context: app
           push: false
           load: true
-          tags: local/devops-intern-final:${{ github.sha }}
+          tags: local/nginx-nomad-cicd-pipeline:${{ github.sha }}
           build-args: BUILD_SHA=${{ github.sha }}
 
   test:
@@ -52,11 +52,11 @@ jobs:
         with:
           context: app
           load: true
-          tags: local/devops-intern-final:${{ github.sha }}
+          tags: local/nginx-nomad-cicd-pipeline:${{ github.sha }}
           build-args: BUILD_SHA=${{ github.sha }}
       - name: Start and verify container
         run: |
-          docker run --detach --rm --name nginx-app -p 8080:8080 local/devops-intern-final:${{ github.sha }}
+          docker run --detach --rm --name nginx-app -p 8080:8080 local/nginx-nomad-cicd-pipeline:${{ github.sha }}
           for attempt in {1..15}; do ./scripts/healthcheck.sh http://localhost:8080 && exit 0; sleep 2; done
           docker logs nginx-app
           exit 1
